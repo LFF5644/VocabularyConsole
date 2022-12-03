@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Project Created 3.12.2022 AT 9:50
-const vocFile="/home/lff/Programmes/rtjscomp/public/p/Vocabulary/s190-191.vocs";
+const vocFile="s190-191.vocs";
 const {readFileSync}=require("fs");
 
 function input(text){
