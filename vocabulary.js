@@ -62,9 +62,21 @@ function loadVocs(vocFile){
 	}
 	return vocList;
 }
+function giveRandomWord(vocList){
+	// if a word starts with underscore then ignore the underscore;
+	const ignoreChars=["_"];
+	vocList=vocList.filter(item=>
+		!ignoreChars.some(char=>
+			item.startsWith(char)
+		)
+	);
+	const askVocIndex=Math.min(vocList.length-1,Math.floor(Math.random()*vocList.length));
+	return vocList[askVocIndex];
+
+}
 async function main(vocs){
 	console.log("Sprache Auswählen\nBitte 0 oder 1 eingaben")
-	const language=Number(await input("[0-1] >"));
+	const language=Number(await input("[0-1] > "));
 	if(
 		isNaN(language)||(
 			language>1||
@@ -74,7 +86,7 @@ async function main(vocs){
 		console.log("\nNur Zahlen zwischen 0-1 werden angenommen!\nEXIT!");
 		process.exit();
 	}
-	let points=0.0;
+	let points=0;
 	let pointsMax=0;
 	let voc=[];
 	
@@ -82,15 +94,11 @@ async function main(vocs){
 	for(voc of vocs){
 		const vocsToAsk=voc[language];
 		const vocsCorrect=voc[language===1?0:1];
-		const length_vocsToAsk=vocsToAsk.length;
-		const askVocIndex=Math.min(length_vocsToAsk-1,Math.floor(Math.random()*length_vocsToAsk))
-		const askVoc=vocsToAsk[askVocIndex];
 		const pointsInfo=()=>{console.log("Punkte inzgesamt: "+points+" von "+pointsMax+" Punkten");}
-		
+		const askVoc=giveRandomWord(vocsToAsk);
 		process.stdout.write("\n");
 		console.log(`Bitte Übersetze "${askVoc}"`);
 		const userInput=await input("$ ");
-		process.stdout.write("\n");
 		if(vocsCorrect.some(item=>
 			item==userInput||
 			item.toLowerCase()==userInput.toLowerCase()
@@ -100,7 +108,7 @@ async function main(vocs){
 		}
 		else{
 			console.log("Leider Falsch :C");
-			console.log(`Richtig ist: "${vocsCorrect[0]}"${vocsCorrect.length>1?", und mehr...":""}`)
+			console.log(`Richtig ist: "${giveRandomWord(vocsCorrect)}"${vocsCorrect.length>1?", ...":""}`)
 		}
 
 		pointsMax+=1;
