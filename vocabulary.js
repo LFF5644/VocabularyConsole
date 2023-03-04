@@ -3,6 +3,11 @@
 const vocFile="s190-191.vocs";
 const {readFileSync}=require("fs");
 
+function random(range=2){
+	// range=2; 0-1;
+	// range=4; 0-3;
+	return Math.min(range-1,Math.floor(Math.random()*range));
+}
 function input(text){
 	return new Promise((succ,err)=>{
 		const readline=require("readline").createInterface({
@@ -70,12 +75,26 @@ function giveRandomWord(vocList){
 			item.startsWith(char)
 		)
 	);
-	const askVocIndex=Math.min(vocList.length-1,Math.floor(Math.random()*vocList.length));
+	const askVocIndex=random(vocList.length);
 	return vocList[askVocIndex];
+}
+function decodeVoc(voc){
+	if(voc.includes("*")){
+		const bit=random(2);
+		voc=bit?
+			voc.split("*").join(""):
+			voc.split("*")[0];
+	}
+	if(voc.startsWith("_")){
+		voc=voc.substr(1);
+	}
+	return voc;
+}
+function wordCheck(userInput,vocsCorrect){
 
 }
 async function main(vocs){
-	console.log("Sprache Auswählen\nBitte 0 oder 1 eingaben")
+	console.log("Sprache Auswählen\nBitte 0 oder 1 eingaben");
 	const language=Number(await input("[0-1] > "));
 	if(
 		isNaN(language)||(
@@ -108,7 +127,7 @@ async function main(vocs){
 		}
 		else{
 			console.log("Leider Falsch :C");
-			console.log(`Richtig ist: "${giveRandomWord(vocsCorrect)}"${vocsCorrect.length>1?", ...":""}`)
+			console.log(`Richtig ist: "${giveRandomWord(vocsCorrect)}"${vocsCorrect.length>1?", ...":""}`);
 		}
 
 		pointsMax+=1;
